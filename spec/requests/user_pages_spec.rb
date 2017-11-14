@@ -33,17 +33,17 @@ describe "User pages" do
       end
 
       describe "after submission" do
-        before { click_button( :button, submit) }  
+        before { find_button( submit ).click }  
 
-        it { should have_title('Sign up') }
-        it { should have_content('error') }
+        it { should has_title?('Sign up') }
+        it { should has_content?('error') }
       end
 
       describe "after saving the user"
-        before { click_button( submit ) }
+        # before { find_button( submit ).click }
         let(:user) { User.find_by(email: 'user@example.com') }
 
-        it { should have_title(user.name)}
+        it { should has_title?(User.name)}
         it { should has_content?('div.alert.alert-success') }
 
       end

@@ -18,11 +18,11 @@ describe "User pages" do
 
     let(:submit) { "Create my account" }
     
-    # describe "with invalid information" do 
-    #   it "should not create user" do 
-    #     expect { click_on 'Create my account' }.not_to change(User, :count)
-    #   end
-    # end
+    describe "with invalid information" do 
+      it "should not create user" do 
+        expect { find_button( submit ).click }.not_to change(User, :count)
+      end
+    end
 
     describe "with valid information" do 
       before do
@@ -47,10 +47,9 @@ describe "User pages" do
         it { should has_content?('div.alert.alert-success') }
 
       end
-      # expect { click_on('Create my account') }
 
       # it "should create a user" do
-      #   expect { click_button "Create my account" }.not_to change(User, :count).by(1)
+      #   expect { find_button( submit ).click }.not_to change(User, :count).by(1)
       # end
     end
   end

@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe "User pages" do
 
-
   subject { page }
 
   describe "profile name" do
@@ -43,9 +42,9 @@ describe "User pages" do
         # before { find_button( submit ).click }
         let(:user) { User.find_by(email: 'user@example.com') }
 
-        it { should has_title?(User.name)}
-        it { should has_content?('div.alert.alert-success') }
-
+        it { should have_link('Sign out') }
+        it { should have_title(user.name) }
+        it { should have_selector('div.alert.alert-success', text: 'Welcome' ) }
       end
 
       # it "should create a user" do

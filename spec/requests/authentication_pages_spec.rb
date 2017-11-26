@@ -1,6 +1,5 @@
 # require 'rails_helper'
 require 'spec_helper'
-
 # RSpec.describe "AuthenticationPages", type: :request do
 #   describe "GET /authentication_pages" do
 #     it "works! (now write some real specs)" do
@@ -45,13 +44,32 @@ describe "Authentication" do
 
       it { should have_title(user.name) }
       it { should have_link('Profile',      href: user_path(user)) }
-      # it { should have_link('Settings',     href: edit_user_path(user)) }
+      it { should have_link('Settings',     href: edit_user_path(user)) }
       it { should have_link('Sign out',     href: signout_path) }
       it { should_not have_link('Sign in',  href: signin_path) }
 
       describe "followed by signout" do 
         before { click_link "Sign out" }
         it { should have_link "Sign in" }
+      end
+    end
+  end
+
+  describe "authorization" do 
+    describe "for non-sign-in user" do 
+      let(:user) { FactoryBot.create(:user) }
+
+      describe "in the User controller" do 
+        
+        describe "visiting the edit page" do 
+          before { visit edit_user_path(user) }
+          it { should have_title("Sign in") }
+        end
+
+        describe "submitting to the update action" do 
+          before { patch user_path(user) }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
       end
     end
   end

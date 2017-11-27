@@ -4,6 +4,24 @@ describe "User pages" do
 
   subject { page }
 
+  describe "index" do 
+    before do 
+      sign_in FactoryBot.create(:user)
+      FactoryBot.create(:user, name: "Bob", email: "bob@example.com")
+      FactoryBot.create(:user, name: "Ben", email: "ben@example.com")
+      visit users_path
+    end
+
+    # it { should have_title('All users') }
+    # it { should have_content('All users') }
+
+    it "should list each user" do 
+      User.all.each do |user|
+        expect(page).to have_selector('li', text: user.name)
+      end
+    end
+  end
+
   describe "profile name" do
     let(:user) { FactoryBot.create(:user) }
     before { visit user_path(user) }

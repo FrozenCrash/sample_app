@@ -4,23 +4,62 @@ describe "User pages" do
 
   subject { page }
 
+  # Index tests
+
   describe "index" do 
-    before do 
-      sign_in FactoryBot.create(:user)
-      FactoryBot.create(:user, name: "Bob", email: "bob@example.com")
-      FactoryBot.create(:user, name: "Ben", email: "ben@example.com")
-      visit users_path
+    let(:user) { FactoryBot.create(:user) }
+
+    before(:each) do 
+      sign_in user
     end
 
-    # it { should have_title('All users') }
-    # it { should have_content('All users') }
+    # Solved issue with drop this tests ?
 
-    it "should list each user" do 
-      User.all.each do |user|
-        expect(page).to have_selector('li', text: user.name)
+    before do 
+      visit users_path 
+      it { should have_title('All users') }
+      it { should have_content('All users') }
+    
+      describe "pagination" do 
+        before(:all)  { 30.times { FactoryBot.create(:user) } }
+        after(:all)   { User.delete_all }
+
+        it { should have_selector('div.pagination') }
+        it "should list each user" do 
+          User.all.each do |user|
+            expect(page).to have_selector('li', text: user.name)
+          end
+        end # End should list each user
+      end   # End describe pagination
+    end
+
+    describe "delete links" do 
+      before do 
+        visit users_path 
+        it { should_not have_link('delete') }
+      end
+      
+      describe "as an admin user" do 
+        let(:admin) { FactoryBot.create(:admin) }
+        before do 
+          sign_in admin
+        end
+
+        before do 
+          visit users_path
+          it { should have_link('delete', href: user_path(User.first)) }
+          it "should be able to delete another user" do 
+            expect do 
+              click_link('delete', match: :first)
+            end.to change(User, :count).by(-1)
+          end
+          it { should_not have_link('delete', href: user_path(admin)) }
+        end
       end
     end
   end
+    # !!!!!!! END !!!!!!!
+    # End index tests
 
   describe "profile name" do
     let(:user) { FactoryBot.create(:user) }

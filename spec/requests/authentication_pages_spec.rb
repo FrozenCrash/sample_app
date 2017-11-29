@@ -37,6 +37,7 @@ describe "Authentication", type: :request do
     describe "with valid information" do
       let(:user) { FactoryBot.create(:user) }
       before do 
+        visit signin_path
         fill_in "Email",    with: user.email.upcase
         fill_in "Password", with: user.password
         click_button "Sign in"

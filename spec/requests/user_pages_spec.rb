@@ -82,27 +82,21 @@ describe "User pages" do
     
     describe "with valid information" do 
       before do
+        visit signup_path
         fill_in "Name",         with: "Example User"
         fill_in "Email",        with: "user@example.com"
         fill_in "Password",     with: "foobar"
-        fill_in "Confirmation", with: "foobar"
-      end
-
-      describe "after submission" do
-        before { visit signup_path }
-        before { click_button( submit ) }  
-
-        it { should have_title('Sign up') }
-        it { should have_content('error') }
+        fill_in "Confirm Password", with: "foobar"
+        click_button( submit )
       end
 
       describe "after saving the user" do
-        before { click_button( submit ) }
-        let(:user) { User.find_by(email: 'user@example.com') }
+        
+        let(:user) { User.find_by_email("user@example.com") }
 
+        it { should has_selector?('title') }
+        it { should have_selector('div.alert.alert-success', text: 'Welcome') }
         it { should have_link('Sign out') }
-        it { should have_title(User.name) }
-        it { should have_selector('div.alert.alert-success', text: 'Welcome' ) }
       end
 
       # it "should create a user" do
